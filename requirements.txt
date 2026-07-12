@@ -1,0 +1,6 @@
+customtkinter
+playwright
+requests
+awesometkinter
+python-bidi
+psycopg2-binary

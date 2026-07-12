@@ -1,0 +1,13 @@
+
+
+success = '#22bb33'
+danger = '#bb2124'
+warning = '#ff8800'
+info = '#33b5e5'
+secondary = '#999999'
+danger_btn = '#F31260'
+danger_hover = '#920B3A'
+primary_btn = '#7828C8'
+primary_hover = '#481878'
+
+videolinkColor = '#71A0B2'

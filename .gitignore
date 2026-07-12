@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+
+# Sensitive files - NEVER COMMIT THESE
+.env
+.env.local
+cookies.txt
+secretvars.py
+config.json
+data/config.json
+data/queue.json
+data/watchdog.json
+watchdog.json
+open_id_config.json
+
+# User credentials and data
+data/
+
+# Logs
+*.log
+light-logs/
+visa-bot/light-logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build files
+dist/
+build/
+*.egg-info/
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,26 @@
+{
+  "name": "visa-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "axios": "^1.12.2",
+    "bottleneck": "^2.19.5",
+    "express": "^4.21.2",
+    "jsdom": "^27.0.0",
+    "node-cron": "^4.2.1",
+    "openai": "^6.3.0",
+    "p-queue": "^9.0.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
+  },
+  "description": "",
+  "main": "visa-bot.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

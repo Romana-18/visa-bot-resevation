@@ -1,0 +1,27 @@
+{
+  "environment": {
+    "production": false,
+    "authConfigIssuer": "https://egyiam.almaviva-visa.it/realms/oauth2-visaSystem-realm-pkce",
+    "authConfigRedirectUri": "https://egy.almaviva-visa.it/",
+    "authConfigClientId": "aa-visasys-public",
+    "authConfigResponseType": "code",
+    "authConfigScope": "openid%20profile%20email",
+    "cmsUrl": "https://egyapi.almaviva-visa.it/cms/",
+    "cmsAPI": "rest",
+    "configurationManagerAPI": "https://egyapi.almaviva-visa.it/configuration-manager",
+    "reservationManagerApi": "https://egyapi.almaviva-visa.it/reservation-manager",
+    "cmsBeApi": "https://egyapi.almaviva-visa.it/cms-be",
+    "sitekey": "6LewmsUpAAAAAOJYsdlzBrXXYzKvMwTqzrw-H-qP",
+    "paymentProvider": "MASTERCARD",
+    "codeISOAlpha3": "EGY",
+    "title": "AlmavivA Visa Egypt",
+    "metaDescription": "AlmavivA Egypt Visa Services",
+    "metaKeywords": "visa, immigration, consulate, italy, embassy",
+    "emailInfo": "eg.info-visa@almaviva-visa.it",
+    "emailGroups": "eg.gruppi@almaviva-visa.it"
+  },
+  "mapConfiguration": {
+    "defaultLatitute": "41.902782",
+    "defaultLongitude": "12.496366"
+  }
+}

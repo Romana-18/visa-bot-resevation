@@ -1,0 +1,138 @@
+
+
+import base64
+import random
+import secrets
+import string
+import hashlib
+from .colors import *
+import requests
+def create_nonce():
+    a = string.ascii_letters + string.digits + '-._~'
+    A = 45
+    y = ''
+    try:
+        crypto = __import__('crypto', fromlist=['getRandomValues'])
+        if hasattr(crypto, 'getRandomValues'):
+            S = crypto.getRandomValues(bytearray(A))
+            y = ''.join((a[x % len(a)] for x in S))
+    except ImportError:
+        pass  # postinserted
+    else:  # inserted
+        if not y:
+            y = ''.join((random.choice(a) for _ in range(A)))
+    return y
+    pass
+
+class Authenticator:
+    def __init__(self, **kwargs):
+        # self._session = kwargs.get('session')
+        self._session = requests.Session()
+        self._headers = {'Accept': 'application/json, text/plain, */*',
+         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'}
+        # self.proxy = kwargs.get('proxy', None)
+        self._config = kwargs.get('config', {})
+        self._open_id_config = kwargs.get('open_id_config', {})
+        self.window = kwargs.get('window', None)
+        if not self._config:
+            self.get_config_from_site()
+        if not self._open_id_config:
+            self.get_openid_config_from_site()
+        self._state = secrets.token_urlsafe(60)
+        self._nonce = secrets.token_urlsafe(60)
+        self._code_verifier = secrets.token_urlsafe(43)
+        self._code_challenge = base64.urlsafe_b64encode(hashlib.sha256(self._code_verifier.encode()).digest()).decode().replace('=', '')
+        self._session_code = ''
+        self._execution = ''
+        self._tab_id = ''
+        self._code = ''
+        self.access_token = ''
+        self.login_permission = False
+
+    # def set_proxy(self, proxy):
+    #     self.proxy = proxy
+
+    def get_config_from_site(self):
+        api_url = 'https://egy.almaviva-visa.it/assets/config/config.json'
+        if self.proxy:
+            # response = self._session.get(api_url, headers=self._headers, proxies=self.proxy)
+            response = self._session.get(api_url, headers=self._headers)
+
+        else:  # inserted
+            response = self._session.get(api_url, headers=self._headers)
+        if response and response.status_code == 200:
+            self._config = response.json()
+
+    def get_openid_config_from_site(self):
+        api_url = 'https://egyiam.almaviva-visa.it/realms/oauth2-visaSystem-realm-pkce/.well-known/openid-configuration'
+        if self.proxy:
+            # response = self._session.get(api_url, headers=self._headers, proxies=self.proxy)
+            response = self._session.get(api_url, headers=self._headers)
+
+        else:  # inserted
+            response = self._session.get(api_url, headers=self._headers)
+        if response and response.status_code == 200:
+            self._open_id_config = response.json()
+
+
+    def _auth(self):
+        print('1----------------------------------------------------------------')
+        api_url = f"{self._open_id_config['authorization_endpoint']}?client_id={self._config['environment']['authConfigClientId']}&response_type={self._config['environment']['authConfigResponseType']}&scope={self._config['environment']['authConfigScope']}&redirect_uri=https%3A%2F%2Fegy.almaviva-visa.it%2F&state={self._state}&code_challenge={self._code_challenge}&code_challenge_method=S256&nonce={self._nonce}"
+
+
+        response = None
+        try:
+            response = self._session.get(api_url, headers=self._headers)
+            # print("Response text:", getattr(response, "text", "No text"))
+        except Exception as e:
+            print("Exception during GET:", e)
+        if response and response.status_code == 200:
+            data = response.text
+            # print(f"Response data: {data}")  # Debugging line
+            self._session_code = data.split('session_code=')[1].split('&')[0]
+            self._execution = data.split('execution=')[1].split('&')[0]
+            self._tab_id = data.split('tab_id=')[1].split('&')[0]
+
+
+    def _authenticate(self, username, password):
+        api_url = f"https://egyiam.almaviva-visa.it/realms/oauth2-visaSystem-realm-pkce/login-actions/authenticate?session_code={self._session_code}&execution={self._execution}&client_id={self._config['environment']['authConfigClientId']}&tab_id={self._tab_id}"
+        headers = self._headers.copy()
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        data = {'username': username, 'password': password, 'credentialId': ''}
+        response = self._session.post(api_url, headers=headers, data=data, allow_redirects=False)
+        if response and response.status_code == 302:
+            self._code = response.headers['Location'].split('code=')[1]
+            self.window.print_in_log(f'تم تسجيل الدخول للحساب {username}', color=success)
+            self.login_permission = True
+        else:
+            self.window.print_in_log(f'تعذر تسجيل الدخول للحساب {username}', color=danger)
+            self.login_permission = False
+
+    def _get_token(self):
+        api_url = 'https://egyiam.almaviva-visa.it/realms/oauth2-visaSystem-realm-pkce/protocol/openid-connect/token'
+        headers = self._headers.copy()
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        headers['Origin'] = 'https://egy.almaviva-visa.it'
+        headers['Referer'] = 'https://egy.almaviva-visa.it/'
+        data = {
+            'grant_type': 'authorization_code',
+            'code': self._code,
+            'redirect_uri': 'https://egy.almaviva-visa.it/',
+            'code_verifier': self._code_verifier,
+            'client_id': self._config['environment']['authConfigClientId']
+        }
+        response = self._session.post(api_url, headers=headers, data=data)
+        if response and response.status_code == 200:
+            data = response.json()
+            self.access_token = data['access_token']
+
+    def login_and_get_token(self, username, password):
+        print('Starting authentication process...')
+        self._auth()
+        # self._authenticate(username, password)
+        self._authenticate(username, password)
+        self._get_token()
+        return self.access_token
+
+
+

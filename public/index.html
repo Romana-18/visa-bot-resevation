@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Almaviva Bot - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fas fa-passport"></i>
+        <h2>Almaviva Bot</h2>
+      </div>
+      
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" data-tab="config">
+          <i class="fas fa-cog"></i>
+          <span>Configuration</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="logs">
+          <i class="fas fa-terminal"></i>
+          <span>Live Logs</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="help">
+          <i class="fas fa-question-circle"></i>
+          <span>Help</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Ready</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <h1 id="pageTitle">Bot Configuration</h1>
+        <div class="header-actions">
+          <button class="btn btn-success" id="startBtn" onclick="startBot()">
+            <i class="fas fa-play"></i> Start Bot
+          </button>
+          <button class="btn btn-danger" id="stopBtn" onclick="stopBot()" disabled>
+            <i class="fas fa-stop"></i> Stop
+          </button>
+        </div>
+      </header>
+
+      <!-- Configuration Tab -->
+      <div class="tab-content active" id="configTab">
+        <div class="grid">
+          <div class="card">
+            <h3><i class="fas fa-user"></i> Account</h3>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="email" placeholder="your-email@example.com">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="password" placeholder="••••••••">
+            </div>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+            <div class="form-group">
+              <label>Office</label>
+              <select id="office">
+                <option value="Cairo">Cairo</option>
+                <option value="Alexandria">Alexandria</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Service Level</label>
+              <select id="pricing">
+                <option value="Standard">Standard - EGP 1750</option>
+                <option value="Vip">VIP - EGP 3810</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card full-width">
+            <h3><i class="fas fa-passport"></i> Visa Details</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Visa Type</label>
+                <select id="visaType">
+                  <option value="Employment Visa (D)">Employment Visa (D)</option>
+                  <option value="Family Reunion Visa for spouses (D)">Family Reunion - Spouses (D)</option>
+                  <option value="Family Reunion Visa for children (D)">Family Reunion - Children (D)</option>
+                  <option value="Family Reunion Visa for parents, (D)">Family Reunion - Parents (D)</option>
+                  <option value="Study Visa (D)">Study Visa (D)</option>
+                  <option value="Study Visa (C)">Study Visa (C)</option>
+                  <option value="Tourism Visa (C)">Tourism Visa (C)</option>
+                  <option value="Business Visa (C)">Business Visa (C)</option>
+                  <option value="Re-entry Visa (D)">Re-entry Visa (D)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Destination City</label>
+                <input type="text" id="city" value="milano" placeholder="milano, roma, etc.">
+              </div>
+              <div class="form-group">
+                <label>Trip Date (DD/MM/YYYY)</label>
+                <input type="text" id="tripDate" value="25/08/2025" placeholder="DD/MM/YYYY">
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+            <div class="form-group">
+              <label>Days Ahead</label>
+              <input type="number" id="daysAhead" value="14" min="1" max="90">
+            </div>
+            <div class="form-group">
+              <label>Speed (RPS)</label>
+              <select id="maxRps">
+                <option value="2">2 req/sec</option>
+                <option value="4">4 req/sec</option>
+                <option value="6" selected>6 req/sec</option>
+                <option value="8">8 req/sec</option>
+                <option value="10">10 req/sec</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card full-width">
+            <h3><i class="fas fa-shield-alt"></i> Proxy Settings (Optional)</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Proxy Server</label>
+                <input type="text" id="proxyServer" placeholder="http://proxy.example.com:8080">
+              </div>
+              <div class="form-group">
+                <label>Proxy Username</label>
+                <input type="text" id="proxyUser" placeholder="username (optional)">
+              </div>
+              <div class="form-group">
+                <label>Proxy Password</label>
+                <input type="password" id="proxyPass" placeholder="password (optional)">
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-toggle-on"></i> Options</h3>
+            <label class="switch-label">
+              <input type="checkbox" id="autoCheck" checked>
+              <span>Auto Click "Check"</span>
+            </label>
+            <label class="switch-label">
+              <input type="checkbox" id="autoProceed">
+              <span>Auto Click "Proceed"</span>
+            </label>
+            <label class="switch-label">
+              <input type="checkbox" id="haltOnFound" checked>
+              <span>Stop on First Slot</span>
+            </label>
+            <label class="switch-label">
+              <input type="checkbox" id="beepOnFound" checked>
+              <span>Beep on Found</span>
+            </label>
+            <label class="switch-label">
+              <input type="checkbox" id="alertOnFound" checked>
+              <span>Alert in Logs</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs Tab -->
+      <div class="tab-content" id="logsTab">
+        <div class="logs-card">
+          <div class="logs-header">
+            <h3><i class="fas fa-terminal"></i> Live Logs</h3>
+            <button class="btn btn-sm" onclick="clearLogs()">
+              <i class="fas fa-trash"></i> Clear
+            </button>
+          </div>
+          <div class="logs-container" id="logsContainer">
+            <div class="log-entry">Waiting to start...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help Tab -->
+      <div class="tab-content" id="helpTab">
+        <div class="help-grid">
+          <div class="help-card">
+            <i class="fas fa-rocket"></i>
+            <h3>Quick Start</h3>
+            <p>1. Enter your Almaviva credentials</p>
+            <p>2. Configure visa preferences</p>
+            <p>3. Click "Start Bot"</p>
+            <p>4. Monitor logs in real-time</p>
+          </div>
+          <div class="help-card">
+            <i class="fas fa-lightbulb"></i>
+            <h3>Tips</h3>
+            <p>• Use 6 req/sec for best results</p>
+            <p>• Enable auto-click for faster hunting</p>
+            <p>• Keep browser window open</p>
+            <p>• Check logs for updates</p>
+          </div>
+          <div class="help-card">
+            <i class="fas fa-info-circle"></i>
+            <h3>Features</h3>
+            <p>✓ Real-time slot hunting</p>
+            <p>✓ Smart rate limiting</p>
+            <p>✓ Auto-click buttons</p>
+            <p>✓ Live monitoring</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
